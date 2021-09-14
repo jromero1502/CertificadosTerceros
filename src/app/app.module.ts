@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { GenerarCertificadoComponent } from './component/logeado/generar-certificado/generar-certificado.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,6 +15,7 @@ import { PruebaComponent } from './component/prueba/prueba.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AuthInterceptorService } from './services/auth/auth-interceptor.service';
 
 
 
@@ -43,7 +44,11 @@ import { MatInputModule } from '@angular/material/input';
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptorService,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

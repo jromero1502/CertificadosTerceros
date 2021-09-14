@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, catchError } from "rxjs/operators";
+import { map, catchError, tap } from "rxjs/operators";
 import { AjaxClient } from 'ajax-client';
 import { JsonPipe } from '@angular/common';
 
@@ -12,6 +12,7 @@ import { JsonPipe } from '@angular/common';
   providedIn: 'root'
 })
 export class GenerateCertificateService {
+  // url="http://jromero.com:3200"
   url="http://52.247.56.140:8080"
   constructor(private http: HttpClient) { 
     if(location.host=="www.fsfb.org.co"){
@@ -22,7 +23,7 @@ export class GenerateCertificateService {
 
   queryCuentas(listYears: any): any {
 
-    let header = { headers:new HttpHeaders({'Content-Type':'application/json'})};
+    let header = { headers:new HttpHeaders({'Content-Type':'application/json'}), withCredentials: true};
 
     return this.http.post(this.url+`/getCuentasParticipacion`, listYears, header);
 
@@ -31,7 +32,7 @@ export class GenerateCertificateService {
 
   queryCertificate(listYears: any): any {
 
-    let header = { headers:new HttpHeaders({'Content-Type':'application/json'})};
+    let header = { headers:new HttpHeaders({'Content-Type':'application/json'}), withCredentials: true};
 
     return this.http.post(this.url+`/listYears`, listYears, header);
 
@@ -40,7 +41,7 @@ export class GenerateCertificateService {
   listMonths(listYears): any {
 
 
-    return this.http.post(this.url+`/listMonths`, listYears);
+    return this.http.post(this.url+`/listMonths`, listYears, {withCredentials: true});
 
   }
 
@@ -48,34 +49,40 @@ export class GenerateCertificateService {
 
 
 
-    return this.http.post(this.url+`/generateCertificate`, dataList);
+    return this.http.post(this.url+`/generateCertificate`, dataList, {withCredentials: true});
 
   }
 
   CertificateByYear(data){
 
-    return this.http.post(this.url+`/generateCertificateByYear`, data);
+    return this.http.post(this.url+`/generateCertificateByYear`, data, {withCredentials: true});
 
   }
 
   listMunicipalities(data){
 
-    return this.http.post(this.url+`/listMunicipalities`, data);
+    return this.http.post(this.url+`/listMunicipalities`, data, {withCredentials: true});
 
   }
 
 
   datosDataPJ(data){
 
-    return this.http.post(this.url+`/getDataPJ`, data);
+    return this.http.post(this.url+`/getDataPJ`, data, {withCredentials: true});
   }
 
   datosDataPN(data){
 
-    return this.http.post(this.url+`/getDataPN`, data);
+    return this.http.post(this.url+`/getDataPN`, data, {withCredentials: true});
   }
 
+  logout() {
+    window.location.href = this.url + "/logout"
+  }
 
+  login(credentials) {
+    return this.http.post(this.url + '/login', credentials, {withCredentials: true}).subscribe(() => console.log('logeado'))
+  }
 }
 
 

@@ -89,7 +89,7 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    // this.generateCertificate.login("==")
     this.filterCertificate();
     
   }
@@ -123,13 +123,16 @@ export class GenerarCertificadoComponent implements OnInit {
             this.dataUsuariosPN = data;
             this.mostrar=true
           }, (error: HttpErrorResponse) => {
-    
+
             this.dataUsuariosPN = null;
-            swal.fire({
-              title: 'Error',
-              text: 'El usuario no se ha encontrado.',
-              icon: 'error',
-            });
+            if (error.status != 401) {
+              swal.fire({
+                title: 'Error',
+                text: 'El usuario no se ha encontrado.',
+                icon: 'error',
+              });
+            }
+
           });
       });
 
@@ -257,20 +260,23 @@ export class GenerarCertificadoComponent implements OnInit {
       this.spinnerService.show();
       this.generateCertificate.queryCuentas(this.datos).subscribe(
         (data) => {
-          this.spinnerService.hide();
-          this.certifiedYear = true;
-          this.servicios = [];
-          for (let index = 0; index < data.anios.length; index++) {
-            this.servicios.push({ "year": data.anios[index] });
-          }
-
-          this.servicios = this.servicios.sort(function (a, b) {
-            if (a.year > b.year) {
-              return -1;
+          try {
+            this.spinnerService.hide();
+            this.certifiedYear = true;
+            this.servicios = [];
+            for (let index = 0; index < data.anios.length; index++) {
+              this.servicios.push({ "year": data.anios[index] });
             }
-          }).slice(0, 10);
-          this.dataCuentasParticipacion = data;
-
+  
+            this.servicios = this.servicios.sort(function (a, b) {
+              if (a.year > b.year) {
+                return -1;
+              }
+            }).slice(0, 10);
+            this.dataCuentasParticipacion = data;
+          } catch(e) {
+            console.log("No hay cuentas de participacion")
+          }
 
         }, (error: HttpErrorResponse) => {
           this.spinnerService.hide();
