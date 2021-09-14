@@ -1,0 +1,170 @@
+<!--
+
+<div class="container">
+  <div class="d-flex justify-content-center mt-4">
+    <mat-card class="card col-lg-5" style="background-color: #ffffffa5;">
+      <form
+      novalidate
+      (ngSubmit)="onSubmit()"
+      [formGroup]="resolvePassword"
+      #myform="ngForm"
+      autocomplete="off"
+     >
+
+      <div class="text-center mt-4">
+        <img src="./assets/images/fsfb.png" alt="Logo fundación" class="logo" />
+      </div>
+      <div class="container">
+        <div class="container mt-5">
+          <h2 style="color: rgba(26,62,156,1); font-weight: bold;">Generación certificado tributario</h2>
+        </div>
+      </div>
+      <div class="container">
+        <div class="mt-5">
+          <mat-form-field class="w-100">
+            <mat-label>Tipo de certificado</mat-label>
+            <mat-select formControlName="documentType" [(value)]="document" (selectionChange)="selectDocumentType(document)">
+              <mat-option disabled value="Seleccione">
+                Seleccione el tipo de certificado
+              </mat-option>
+              <mat-option value=1>
+                Ica.
+              </mat-option>
+              <mat-option value=2>
+                Iva.
+              </mat-option>
+               <mat-option value=3>
+                Retefuente.
+              </mat-option>
+              <mat-option value=4>
+                Timbre.
+              </mat-option>
+              <mat-option value=5>
+                Cuentas en participación.
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="resolvePassword.get('documentType').hasError('required') ">
+              Este campo es obligatorio.
+            </mat-error>
+          </mat-form-field>
+          </div>
+      </div>
+
+
+      <div *ngIf="certifiedYear">
+        <div class="container mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>Año</mat-label>
+            <mat-select formControlName="servicio" [(value)]="certifiedYearValue" (selectionChange)="selectCertifiedYear(certifiedYearValue)">
+              <mat-option  *ngFor="let option of filteredServList | async" [value]="option" >
+                {{option.year}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="resolvePassword.get('servicio').hasError('required') ">
+              Este campo es obligatorio.
+            </mat-error>
+
+          </mat-form-field>
+        </div>
+      </div>  -->
+
+      <!--
+      <div class="container" *ngIf="certifiedPeriodicity">
+        <div class="container mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>Periocidad</mat-label>
+            <mat-select formControlName="periocidad">
+              <mat-option disabled value="Seleccione">
+                Seleccione la periocidad
+              </mat-option>
+              <mat-option value="1">
+                Bimestral.
+              </mat-option>
+              <mat-option value="2">
+                Anual.
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="resolvePassword.get('periocidad').hasError('required') ">
+              Este campo es obligatorio.
+            </mat-error>
+
+            <mat-error *ngIf="cambioCitas.get('tipoCita').hasError('checkState')">
+              No se puede cambiar al mismo estado de la cita
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>   -->
+
+      <!--
+      <div *ngIf="certifiedPeriod">
+        <div class="container mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>Periodo</mat-label>
+            <mat-select formControlName="period" [(value)]="certifiedPeriodValue" (selectionChange)="selectCertifiedPeriod(certifiedPeriodValue)">
+              <mat-option  *ngFor="let option of filteredPeriod | async" [value]="option" >
+                {{option.periodo}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="resolvePassword.get('period').hasError('required') ">
+              Este campo es obligatorio.
+            </mat-error>
+
+          </mat-form-field>
+        </div>
+      </div>
+
+
+      <div class="" *ngIf="certifiedMunicipality">
+        <div class="container mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>Municipio</mat-label>
+            <mat-select formControlName="municipio" [(value)]="certifiedMunicipalityValue" (selectionChange)="selectCertifiedMunicipality(certifiedMunicipalityValue)" >
+              <mat-option disabled value="Seleccione">
+                Seleccione el municipio
+              </mat-option>
+              <mat-option value="1">
+                Bogotá.
+              </mat-option>
+              <mat-option value="2">
+                Chia.
+              </mat-option>
+              <mat-option value="3">
+                Madrid.
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="resolvePassword.get('municipio').hasError('required') ">
+              Este campo es obligatorio.
+            </mat-error>
+
+          </mat-form-field>
+        </div>
+      </div>
+      <div>
+      </div>
+      <div class="container">
+      </div>
+      <br>
+      <div class="container text-right mt-5">
+       <button mat-raised-button class="buttonCA-second mat-raised-button" type="button" style="font-size: 12px;" (click)="close()">CANCELAR</button>
+       <button mat-raised-button class="buttonCA primary" type="submit" style="font-size: 12px;" [disabled]="resolvePassword.invalid">DESCARGAR</button>
+      </div>
+      <br> <br> <br>
+     </form>
+    </mat-card>
+  </div>
+</div>
+<br> <br> <br>
+
+
+<div>
+  <button class="btn col col-lg-4 btn-danger btn-block ml-4" (click)="downloadPDF()">Download PDF</button>
+</div>  -->
+
+<ngx-spinner bdOpacity = 0.6 style="width: 300px;"
+  bdColor = "#1F387EE6"
+  size = "medium"
+  [fullScreen] = "true">
+  <p class="type_18 text-white">Estamos procesando su solicitud, por favor espere...</p>
+</ngx-spinner>
+
+<router-outlet></router-outlet>

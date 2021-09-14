@@ -1,0 +1,218 @@
+<div class="container">
+  <div class="row" [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Numero de Identificacion</mat-label>
+        <input formControlName="userProviderNit" [(ngModel)]="userProviderNit"  type="text"  matInput/>
+      </mat-form-field>
+      <button (click)='buscarPersona()' type='submit' mat-raised-button class="buttonCA-second mat-raised-button" >BUSCAR</button>
+  </div>
+</div>
+<div class="container" *ngIf="mostrar">
+  <div class="d-flex justify-content-center mt-4">
+    <mat-card class="card col-lg-5" style="background-color: #ffffffa5;">
+      <form novalidate (ngSubmit)="onSubmit()" [formGroup]="resolvePassword" #myform="ngForm" autocomplete="off">
+
+        <div class="text-center mt-4">
+          <img src="/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png" alt="Logo fundación" class="logo" />
+        </div>
+        <div class="container">
+          <div class="container mt-5">
+            <h2 style="color: rgba(26,62,156,1); font-weight: bold;">Generación certificado tributario</h2>
+          </div>
+        </div>
+        <div class="container">
+          <div class="mt-5">
+            <mat-form-field class="w-100">
+              <mat-label>Tipo de certificado</mat-label>
+              <mat-select formControlName="documentType" [(value)]="document"
+                (selectionChange)="selectDocumentType(document)">
+                <mat-option  value="Seleccione">
+                  Seleccione el tipo de certificado
+                </mat-option>
+                <mat-option [value]=1>
+                  ICA
+                </mat-option>
+                <mat-option [value]=2>
+                  IVA
+                </mat-option>
+                <mat-option [value]=3>
+                  TIMBRE
+                </mat-option>
+                <mat-option [value]=4>
+                  RETEFUENTE
+                </mat-option>
+                <mat-option [value]=5>
+                  CUENTAS EN PARTICIPACIÓN
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('documentType').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div *ngIf="certifiedYear">
+          <mat-spinner *ngIf="certifiedYearSpinner"></mat-spinner>
+          <div class="container mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>Año</mat-label>
+              <mat-select formControlName="servicio" [(value)]="certifiedYearValue"
+                (selectionChange)="selectCertifiedYear(certifiedYearValue)">
+                <mat-option *ngFor="let option of servicios" [value]="option">
+                  {{option.year}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('servicio').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+              <!--
+            <mat-error *ngIf="cambioCitas.get('tipoCita').hasError('checkState')">
+              No se puede cambiar al mismo estado de la cita
+            </mat-error>   -->
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="" *ngIf="certifiedPeriodicity">
+          <div class="container mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>Periocidad</mat-label>
+              <mat-select formControlName="periocidad" [(value)]="selectPeriodicidad"
+                (selectionChange)="selectPeriodicy(selectPeriodicidad)">
+                <mat-option disabled value="Seleccione">
+                  Seleccione la periocidad
+                </mat-option>
+                <mat-option [value]=1>
+                  ANUAL
+                </mat-option>
+                <mat-option [value]=2>
+                  BIMESTRAL
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('periocidad').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="" *ngIf="certifiedPeriodicityDos">
+          <div class="container mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>Periocidad</mat-label>
+              <mat-select formControlName="periocidad" [(value)]="PeriodicityDos"
+                (selectionChange)="selectPeriodicyDos(PeriodicityDos)">
+                <mat-option disabled value="Seleccione">
+                  Seleccione la periocidad
+                </mat-option>
+                <mat-option [value]=1>
+                  ANUAL
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('periocidad').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div *ngIf="certifiedPeriod">
+          <div class="container mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>Periodo</mat-label>
+              <mat-select formControlName="period" [(value)]="certifiedPeriodValue"
+                (selectionChange)="selectCertifiedPeriod(certifiedPeriodValue)">
+                <mat-option *ngFor="let option of filteredPeriod" [value]="option">
+                  {{option.periodo}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('period').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+              <!--
+            <mat-error *ngIf="cambioCitas.get('tipoCita').hasError('checkState')">
+              No se puede cambiar al mismo estado de la cita
+            </mat-error>   -->
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div *ngIf="certifiedMunicipalityDos">
+          <div class="container mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>Municipio</mat-label>
+              <mat-select formControlName="municipio" [(value)]="certifiedMunicipalityValue"
+                (selectionChange)="selectCertifiedMunicipality(certifiedMunicipalityValue)">
+                <mat-option *ngFor="let option of filteredMunicipal" [value]="option">
+                  {{option.municipio}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('period').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+              <!--
+            <mat-error *ngIf="cambioCitas.get('tipoCita').hasError('checkState')">
+              No se puede cambiar al mismo estado de la cita
+            </mat-error>   -->
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div class="" *ngIf="certifiedMunicipality">
+          <div class="container mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>Municipio</mat-label>
+              <mat-select formControlName="municipio" [(value)]="certifiedMunicipalityValue"
+                (selectionChange)="selectCertifiedMunicipality(certifiedMunicipalityValue)">
+                <mat-option disabled value="Seleccione">
+                  Seleccione el municipio
+                </mat-option>
+                <mat-option *ngIf="validacionMunicipioUno" [value]=1>
+                  BOGOTÁ
+                </mat-option>
+                <mat-option *ngIf="validacionMunicipioTres" [value]=3>
+                  CHIA
+                </mat-option>
+                <mat-option *ngIf="validacionMunicipioDos" [value]=2>
+                  MADRID
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="resolvePassword.get('municipio').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+              <!--
+            <mat-error *ngIf="cambioCitas.get('tipoCita').hasError('checkState')">
+              No se puede cambiar al mismo estado de la cita
+            </mat-error>   -->
+            </mat-form-field>
+          </div>
+        </div>
+        <div>
+        </div>
+        <div class="container">
+        </div>
+        <br>
+        <div class="container text-right mt-5">
+          <button mat-raised-button class="buttonCA-second mat-raised-button" type="button" style="font-size: 12px;"
+            (click)="close()">CANCELAR</button>
+          <button mat-raised-button class="buttonCA primary" type="submit" style="font-size: 12px;"
+            [disabled]="!descarga">DESCARGAR</button>
+        </div>
+        <br> <br> <br>
+      </form>
+    </mat-card>
+  </div>
+</div>
+<br> <br> <br>
+
+
+<!--
+<div>
+  <button class="btn col col-lg-4 btn-danger btn-block ml-4" (click)="onSubmit()">Download PDF</button>
+</div>
+-->
+
+<!-- [disabled]="resolvePassword.invalid"  -->

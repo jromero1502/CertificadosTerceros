@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+html, body { height: 100%;
+             padding: 0;
+             margin: 0 !important;
+             font-family: 'Roboto', sans-serif !important;
+             height: 100%;
+            }
+
+.buttonCA{
+  border-radius: 25px !important;
+  height: 40px;
+  color: white !important;
+  justify-content: center;
+  padding: 0 2.5rem !important;
+}
+
+.buttonCA-second{
+  border-radius: 25px !important;
+  height: 40px;
+  color: black !important;
+  justify-content: center;
+  padding: 0 2.5rem !important;
+}
+
+.card:hover {
+  -webkit-box-shadow: 3px 0px 10px 3px rgba(26,62,156,1);
+  -moz-box-shadow: 3px 0px 10px 3px rgba(26,62,156,1);
+  box-shadow: 3px 0px 10px 3px rgba(26,62,156,1);
+}
+
+.primary {
+  background-color: #8BC34A;
+}
