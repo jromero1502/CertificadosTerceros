@@ -13,6 +13,7 @@ import * as trans from 'numero-a-letras'
 import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+//import { Console } from 'console';
 @Component({
   selector: 'app-generar-certificado',
   templateUrl: './generar-certificado.component.html',
@@ -80,6 +81,7 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
+  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
 
 
 
@@ -89,9 +91,10 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.generateCertificate.login("==")
+    //this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==")
     this.filterCertificate();
-    
+    this.userProviderNit = this.currentUser
+    this.buscarPersona()
   }
 
   filterCertificate() {
@@ -163,7 +166,6 @@ export class GenerarCertificadoComponent implements OnInit {
   // Seleccion tipo certificado
 
   selectDocumentType(document: any) {
-
 
     if (document === 1 || document === 2) {
 
@@ -347,7 +349,6 @@ export class GenerarCertificadoComponent implements OnInit {
 
       this.generateCertificate.CertificateByYear(this.datos).subscribe(
         (data) => {
-
           this.spinnerService.hide();
           this.certifiedMunicipality = true;
           this.validacionMunicipioDos === true;
@@ -537,6 +538,9 @@ export class GenerarCertificadoComponent implements OnInit {
 
     this.generateCertificate.CertificateByYear(this.datos).subscribe(
       (data) => {
+
+          //console.log(data);
+
         this.spinnerService.hide();
         this.listaDatosAnual = data;
 
@@ -582,7 +586,6 @@ export class GenerarCertificadoComponent implements OnInit {
           (data) => {
             this.spinnerService.hide();
             this.listaDatosAnual = data;
-
 
             this.fechaPeriodoUno = data[0];
             this.fechaPeriodoUno = this.fechaPeriodoUno;
@@ -1033,6 +1036,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
+    //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = new jsPDF();
@@ -1210,6 +1214,7 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
+    //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
@@ -1413,6 +1418,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
+    //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = new jsPDF();
@@ -1595,6 +1601,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
+    //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = new jsPDF('', '', [600, 1000]);
@@ -1637,12 +1644,24 @@ export class GenerarCertificadoComponent implements OnInit {
     var tamañotITULO = datos.length;
     doc.text(titulo - tamañotITULO, 85, `${datos.toUpperCase()}`);
     doc.text(97, 90, `${identificacion}`);
+    
 
-    doc.text(20, 105, 'PERIODO');
-    doc.text(45, 105, 'CONCEPTO');
-    doc.text(120, 105, 'BASE');
-    doc.text(145, 105, '%');
-    doc.text(170, 105, 'RETENCIÓN');
+    if(this.listaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
+      doc.text(19, 105, 'PERIODO');
+      doc.text(43, 105, 'CONCEPTO');
+      doc.text(115, 105, 'BASE');
+      doc.text(137, 105, '%');
+      doc.text(149, 103, 'BASE \nINGRESO');
+      doc.text(173, 105, 'RETENCIÓN');
+    }else{
+      doc.text(20, 105, 'PERIODO');
+      doc.text(45, 105, 'CONCEPTO');
+      doc.text(120, 105, 'BASE');
+      doc.text(145, 105, '%');
+      doc.text(170, 105, 'RETENCIÓN');
+    }
+
+    
 
     //  Porcentajes PDF
     doc.setFont('helvetica');
@@ -1656,6 +1675,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
     for (let index = 0; index < this.listaDatosAnual.length; index++) {
       const element = this.listaDatosAnual[index];
+
+      
 
       retenido += element.retencion;
 
@@ -1677,18 +1698,40 @@ export class GenerarCertificadoComponent implements OnInit {
       data = data + 5
 
       doc.setFontSize(8);
-      doc.text(20, 110 + data, element.periodo);
-      doc.text(45, 110 + data, element.concepto);
-      doc.text(135, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
-      doc.text(145, 110 + data, `${element.porcentaje.toString()}`);
-      doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+
+      //console.log(element.base_ingreso)
+      
+
+      if(this.listaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
+        doc.text(19, 110 + data, element.periodo);
+        doc.text(43, 110 + data, element.concepto);
+        doc.text(130, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
+        doc.text(137, 110 + data, `${element.porcentaje.toString()}`);
+        if(element.base_ingreso == null){
+            element.base_ingreso = " "
+            doc.text(150, 110 + data, `${element.base_ingreso.toString()}`);
+        } else {
+            doc.text(150, 110 + data, `${element.base_ingreso.toString()}`);
+        } 
+        
+
+        doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+      } else{
+        doc.text(20, 110 + data, element.periodo);
+        doc.text(45, 110 + data, element.concepto);
+        doc.text(135, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
+        doc.text(145, 110 + data, `${element.porcentaje.toString()}`);
+        doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+      }
+
+      
 
     }
     doc.setFont('helvetica');
     doc.setFontType('bold');
     doc.text(30, 120 + data, `Total`);
-    doc.text(113, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
-    doc.text(179, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(116, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
+    doc.text(175, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
 
@@ -1799,6 +1842,7 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
+    //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = new jsPDF('', '', [600, 1000]);

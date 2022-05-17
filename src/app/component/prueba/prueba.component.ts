@@ -15,13 +15,20 @@ export class PruebaComponent implements OnInit {
   constructor(private generateCertificate: GenerateCertificateService) { }
 
   ngOnInit(): void {
-
-    this.datos.crMunicipio = 1;
+  this.generateCertificate.login ("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==") ;
+    /* this.datos.crMunicipio = 1;
     this.datos.monthTwo = "ABRIL";
     this.datos.nitTercero = "8603506247";
     this.datos.monthOne = "MARZO";
     this.datos.typeCertificate = 1;
-    this.datos.year = 2012;
+    this.datos.year = 2012; */
+
+    this.datos.crMunicipio = 1;
+    this.datos.monthTwo = "JUNIO";
+    this.datos.nitTercero = "8603506247";
+    this.datos.monthOne = "MAYO";
+    this.datos.typeCertificate = 4;
+    this.datos.year = 2017;
 
     console.log(this.datos);
 
