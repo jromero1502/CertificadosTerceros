@@ -93,7 +93,8 @@ export class GenerarCertificadoComponent implements OnInit {
   ngOnInit(): void {
     //this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==")
     this.filterCertificate();
-    this.userProviderNit = this.currentUser
+    //this.userProviderNit = this.currentUser
+    this.userProviderNit = ""
     this.buscarPersona()
   }
 
@@ -596,8 +597,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
             if (this.seleccionPeriodicidad === 1) {
 
-              this.fechaUno = `01/01/${this.fechaPeriodoDos.fecha.slice(0, -17)}`
-              this.fechaDos = `31/12/${this.fechaPeriodoDos.fecha.slice(0, -17)}`
+              this.fechaUno = `01/01/${new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, 4)}`
+              this.fechaDos = `31/12/${new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, 4)}`
 
             } else if (this.seleccionPeriodicidad === 2) {
 
@@ -703,8 +704,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
             if (this.seleccionPeriodicidad === 1) {
 
-              this.fechaUno = `01/01/${this.fechaPeriodoDos.fecha.slice(0, -17)}`
-              this.fechaDos = `31/12/${this.fechaPeriodoDos.fecha.slice(0, -17)}`
+              this.fechaUno = `01/01/${new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, 4)}`
+              this.fechaDos = `31/12/${new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, 4)}`
 
             } else if (this.seleccionPeriodicidad === 2) {
 
@@ -808,8 +809,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
           if (this.seleccionPeriodicidad === 1) {
 
-            this.fechaUno = `01/01/${this.fechaPeriodoDos.fecha.slice(0, -17)}`
-            this.fechaDos = `31/12/${this.fechaPeriodoDos.fecha.slice(0, -17)}`
+            this.fechaUno = `01/01/${new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, 4)}`
+            this.fechaDos = `31/12/${new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, 4)}`
 
           } else if (this.seleccionPeriodicidad === 2) {
 
