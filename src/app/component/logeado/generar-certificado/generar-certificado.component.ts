@@ -81,7 +81,10 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  currentUser: string
+  
+  originalListaDatosAnual: any[]
 
 
 
@@ -91,11 +94,10 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    //this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==")
     this.filterCertificate();
-    //this.userProviderNit = this.currentUser
+    // this.userProviderNit = this.currentUser
     this.userProviderNit = ""
-    this.buscarPersona()
+    // this.buscarPersona()
   }
 
   filterCertificate() {
@@ -983,6 +985,8 @@ export class GenerarCertificadoComponent implements OnInit {
   // tslint:disable-next-line:typedef
   downloadPDF() {
 
+    this.originalListaDatosAnual = this.listaDatosAnual.map(e => e)
+
     if (this.datos.typeCertificate === 1) {
 
       this.downloadPDFIca();
@@ -1010,7 +1014,7 @@ export class GenerarCertificadoComponent implements OnInit {
   }
 
 
-  downloadPDFIca() {
+  downloadPDFIca(document: any = null) {
     var mes = this.fecha.getMonth() + 1;
     var mesCompleto = "";
     if (mes <= 9) {
@@ -1037,10 +1041,10 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
-    //logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
-    let doc = new jsPDF();
+    let doc = document ? document : new jsPDF()
     doc.addImage(logo, 'JPEG', 10, 5, 50, 20);
     doc.setFont('helvetica');
     doc.setFontType('bold');
@@ -1097,15 +1101,15 @@ export class GenerarCertificadoComponent implements OnInit {
     var retenido: number = 0;
     var base: number = 0;
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
 
       retenido += element.retencion;
 
     }
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
 
       base += element.base;
 
@@ -1119,13 +1123,67 @@ export class GenerarCertificadoComponent implements OnInit {
       const element = this.listaDatosAnual[index];
 
       data = data + 5
-
       doc.setFontSize(8);
       doc.text(30, 110 + data, element.periodo);
       doc.text(55, 110 + data, element.concepto);
       doc.text(128, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
       doc.text(155, 110 + data, `${element.porcentaje.toString()}`);
       doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+      
+      const yAxis = 110 + data
+
+      if (yAxis > 160)
+      {
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.text(30, 120 + data, `TOTAL`);
+    
+        doc.text(115, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
+        doc.text(179, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 130 + data, `VALOR RETENIDO:  $${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.setFontSize(8);
+        doc.text(20, 135 + data, `${retenidoTexto}`);
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 155 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
+        doc.text(20, 160 + data, 'NIT: 860037950-2');
+        doc.text(20, 165 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+        doc.text(20, 175 + data, 'NOTA: LAS PERSONAS JURÍDICAS PODRÁN ENTREGAR LOS CERTIFICADOS DE RETENCIÓN EN LA FUENTE, EN FORMA CONTINUA IMPRESA');
+        doc.text(20, 180 + data, 'POR COMPUTADOR, SIN NECESIDAD DE FIRMA AUTÓGRAFA (D.R. 836/91)LOS DOCUMENTOS QUE SE ENCUENTRAN ALMACENADOS EN');
+        doc.text(20, 185 + data, 'MEDIOS MAGNÉTICOS O ELECTRÓNICOS PUEDAN SER IMPRESOS EN CUALQUIER PARTE UTILIZANDO EL COMPUTADOR, YA SEA EN LA SEDE');
+        doc.text(20, 190 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
+        doc.text(20, 195 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
+        doc.text(20, 200 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 260);
+        doc.text(50, 215 + data, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
+        doc.text(90, 220 + data, 'www.fsfb.org.co');
+        doc.setTextColor(0, 0, 0);
+        doc.addPage()
+        data = 0
+        this.listaDatosAnual.splice(0, index + 1)
+        return this.downloadPDFIca(doc)
+      }
+
     }
     doc.setFont('helvetica');
     doc.setFontType('bold');
@@ -1189,7 +1247,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
   }
 
-  downloadPDFIva() {
+  downloadPDFIva(document: any = null) {
     var mes = this.fecha.getMonth() + 1;
     var mesCompleto = "";
     if (mes <= 9) {
@@ -1219,7 +1277,7 @@ export class GenerarCertificadoComponent implements OnInit {
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
-    let doc = new jsPDF('', '', [600, 1000]);
+    let doc = document ? document : new jsPDF('', '', [600, 1000]);
     doc.addImage(logo, 'JPEG', 10, 5, 50, 20);
     doc.setFont('helvetica');
     doc.setFontType('bold');
@@ -1281,20 +1339,20 @@ export class GenerarCertificadoComponent implements OnInit {
     var retenido: number = 0;
 
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
 
       retenido += element.retencion;
 
     }
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
       vrAntesIva += element.valortotal;
     }
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
       idIva += element.iva;
     }
 
@@ -1315,6 +1373,60 @@ export class GenerarCertificadoComponent implements OnInit {
       doc.text(138, 105 + data, new Intl.NumberFormat("de-DE").format(element.iva.toString()));
       doc.text(162, 105 + data, `${element.porcentaje.toString()}`);
       doc.text(180, 105 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()));
+
+      const yAxis = 110 + data
+
+      if (yAxis > 160)
+      {
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(8);
+        doc.text(40, 120 + data, `TOTAL`);
+        doc.text(95, 120 + data, `${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
+        doc.text(138, 120 + data, `${new Intl.NumberFormat("de-DE").format(idIva)}`);
+        doc.text(178, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 130 + data, `VALOR RETENIDO:  $${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.setFontSize(8);
+        doc.text(20, 135 + data, `${retenidoTexto}`);
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 155 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
+        doc.text(20, 160 + data, 'NIT: 860037950-2');
+        doc.text(20, 165 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+        doc.text(20, 175 + data, 'NOTA: LAS PERSONAS JURÍDICAS PODRÁN ENTREGAR LOS CERTIFICADOS DE RETENCIÓN EN LA FUENTE, EN FORMA CONTINUA IMPRESA');
+        doc.text(20, 180 + data, 'POR COMPUTADOR, SIN NECESIDAD DE FIRMA AUTÓGRAFA (D.R. 836/91)LOS DOCUMENTOS QUE SE ENCUENTRAN ALMACENADOS EN');
+        doc.text(20, 185 + data, 'MEDIOS MAGNÉTICOS O ELECTRÓNICOS PUEDAN SER IMPRESOS EN CUALQUIER PARTE UTILIZANDO EL COMPUTADOR, YA SEA EN LA SEDE');
+        doc.text(20, 190 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
+        doc.text(20, 195 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
+        doc.text(20, 200 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 260);
+        doc.text(50, 215 + data, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
+        doc.text(90, 220 + data, 'www.fsfb.org.co');
+        doc.setTextColor(0, 0, 0);
+        doc.addPage()
+        data = 0
+        this.listaDatosAnual.splice(0, index + 1)
+        return this.downloadPDFIva(doc)
+      }
 
     }
 
@@ -1391,7 +1503,7 @@ export class GenerarCertificadoComponent implements OnInit {
   }
 
 
-  downloadPDFTimbre() {
+  downloadPDFTimbre(document: any = null) {
 
     var mes = this.fecha.getMonth() + 1;
     var mesCompleto = "";
@@ -1422,7 +1534,7 @@ export class GenerarCertificadoComponent implements OnInit {
     //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
-    let doc = new jsPDF();
+    let doc = document ? document : new jsPDF();
     doc.addImage(logo, 'JPEG', 10, 5, 50, 20);
     doc.setFont('helvetica');
     doc.setFontType('bold');
@@ -1487,8 +1599,8 @@ export class GenerarCertificadoComponent implements OnInit {
     var impuestoPagadoTotal: number = 0;
     var impuestoretenidoTotal: number = 0;
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
       retenido += element.impuestopagado;
       montoBasteTotal += element.montobase;
       impuestoPagadoTotal += element.impuestopagado;
@@ -1510,6 +1622,62 @@ export class GenerarCertificadoComponent implements OnInit {
       doc.text(114, 110 + data, `${element.tar}` == undefined ? "" : `${element.tar}`);
       doc.text(150, 110 + data, new Intl.NumberFormat("de-DE").format(element.impuestopagado.toString()), { align: 'right' });
       doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.impuestoretenido.toString()), { align: 'right' });
+
+      const yAxis = data + 110
+      
+      if (yAxis > 160)
+      {
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(8);
+    
+        doc.text(20, 120 + data, "TOTAL");
+        doc.text(99, 120 + data, new Intl.NumberFormat("de-DE").format(montoBasteTotal), { align: 'right' });
+        doc.text(150, 120 + data, new Intl.NumberFormat("de-DE").format(impuestoPagadoTotal), { align: 'right' });
+        doc.text(190, 120 + data, new Intl.NumberFormat("de-DE").format(impuestoretenidoTotal), { align: 'right' });
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 130 + data, `VALOR RETENIDO:  $` + new Intl.NumberFormat("de-DE").format(retenido));
+        doc.setFontSize(8);
+        doc.text(20, 135 + data, `${retenidoTexto}`);
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 155 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
+        doc.text(20, 160 + data, 'NIT: 860037950-2');
+        doc.text(20, 165 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+        doc.text(20, 175 + data, 'NOTA: LAS PERSONAS JURÍDICAS PODRÁN ENTREGAR LOS CERTIFICADOS DE RETENCIÓN EN LA FUENTE, EN FORMA CONTINUA IMPRESA');
+        doc.text(20, 180 + data, 'POR COMPUTADOR, SIN NECESIDAD DE FIRMA AUTÓGRAFA (D.R. 836/91)LOS DOCUMENTOS QUE SE ENCUENTRAN ALMACENADOS EN');
+        doc.text(20, 185 + data, 'MEDIOS MAGNÉTICOS O ELECTRÓNICOS PUEDAN SER IMPRESOS EN CUALQUIER PARTE UTILIZANDO EL COMPUTADOR, YA SEA EN LA SEDE');
+        doc.text(20, 190 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
+        doc.text(20, 195 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
+        doc.text(20, 200 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 260);
+        doc.text(50, 215 + data, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
+        doc.text(90, 220 + data, 'www.fsfb.org.co');
+    
+        doc.setTextColor(0, 0, 0);
+        doc.addPage()
+        data = 0
+        this.listaDatosAnual.splice(0, index + 1)
+        return this.downloadPDFTimbre(doc)
+      }
     }
 
     doc.setFont('helvetica');
@@ -1574,7 +1742,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
   }
 
-  downloadPDFRenta() {
+  downloadPDFRenta(document: any = null) {
 
     var mes = this.fecha.getMonth() + 1;
     var mesCompleto = "";
@@ -1605,7 +1773,7 @@ export class GenerarCertificadoComponent implements OnInit {
     //logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
-    let doc = new jsPDF('', '', [600, 1000]);
+    let doc = document ? document : new jsPDF('', '', [600, 1000]);
     doc.addImage(logo, 'JPEG', 10, 5, 50, 20);
     doc.setFont('helvetica');
     doc.setFontType('bold');
@@ -1647,7 +1815,7 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.text(97, 90, `${identificacion}`);
     
 
-    if(this.listaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
+    if(this.originalListaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
       doc.text(19, 105, 'PERIODO');
       doc.text(43, 105, 'CONCEPTO');
       doc.text(115, 105, 'BASE');
@@ -1674,8 +1842,8 @@ export class GenerarCertificadoComponent implements OnInit {
     var retenido: number = 0;
     var base: number = 0;
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
 
       
 
@@ -1683,8 +1851,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
     }
 
-    for (let index = 0; index < this.listaDatosAnual.length; index++) {
-      const element = this.listaDatosAnual[index];
+    for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
+      const element = this.originalListaDatosAnual[index];
 
       base += element.base;
 
@@ -1726,6 +1894,60 @@ export class GenerarCertificadoComponent implements OnInit {
       }
 
       
+      const yAxis = data + 110
+      
+      if (yAxis > 160)
+      {
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.text(30, 120 + data, `Total`);
+        doc.text(116, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
+        doc.text(175, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 130 + data, `VALOR RETENIDO:  $${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.setFontSize(8);
+        doc.text(20, 135 + data, `${retenidoTexto}`);
+        //doc.text(20, 140 + data, `${resulRetenidoTextoDos.slice(0, -12).toUpperCase()}`);
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+    
+        doc.setFontSize(7);
+        doc.text(20, 145 + data, 'LA BASE DE RETENCIÓN EN LA FUENTE, CORRESPONDE AL 100% DE SUS INGRESOS MENOS LAS DEDUCCIONES DE LEY SEGÚN EL ARTÍCULO');
+        doc.text(20, 150 + data, '126 DEL ESTATUTO TRIBUTARIO (AFC, APORTES OBLIGATORIOS Y/O VOLUNTARIOS DE PENSIÓN), EN CASO DE TENERLOS.');
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.text(20, 170 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
+        doc.text(20, 175 + data, 'NIT: 860037950-2');
+        doc.text(20, 180 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
+    
+        doc.setFont('helvetica');
+        doc.setFontType('normal');
+        doc.setFontSize(7);
+        doc.text(20, 190 + data, 'NOTA: LAS PERSONAS JURÍDICAS PODRÁN ENTREGAR LOS CERTIFICADOS DE RETENCIÓN EN LA FUENTE, EN FORMA CONTINUA IMPRESA');
+        doc.text(20, 195 + data, 'POR COMPUTADOR, SIN NECESIDAD DE FIRMA AUTÓGRAFA (D.R. 836/91)LOS DOCUMENTOS QUE SE ENCUENTRAN ALMACENADOS EN');
+        doc.text(20, 200 + data, 'MEDIOS MAGNÉTICOS O ELECTRÓNICOS PUEDAN SER IMPRESOS EN CUALQUIER PARTE UTILIZANDO EL COMPUTADOR, YA SEA EN LA SEDE');
+        doc.text(20, 205 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
+        doc.text(20, 210 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
+        doc.text(20, 215 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
+    
+    
+        doc.setFont('helvetica');
+        doc.setFontType('bold');
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 260);
+        doc.text(50, 230 + data, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
+        doc.text(90, 235 + data, 'www.fsfb.org.co');
+        doc.setTextColor(0, 0, 0);
+        doc.addPage()
+        data = 0
+        this.listaDatosAnual.splice(0, index + 1)
+        return this.downloadPDFRenta(doc)
+      }
 
     }
     doc.setFont('helvetica');
