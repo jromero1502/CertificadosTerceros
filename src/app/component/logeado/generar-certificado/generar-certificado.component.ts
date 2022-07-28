@@ -94,6 +94,7 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
     // this.userProviderNit = this.currentUser
     this.userProviderNit = ""
@@ -418,12 +419,12 @@ export class GenerarCertificadoComponent implements OnInit {
           let datosEnero = <any>{};
 
           datosEnero = this.filteredPeriod.filter(function (car) {
-            return car.periodo === 'ENERO' ? car.periodo = 'ENERO - FEBRERO' : ''
-              || car.periodo === 'MAYO' ? car.periodo = 'MAYO - JUNIO' : ''
-                || car.periodo === 'MARZO' ? car.periodo = 'MARZO - ABRIL' : ''
-                  || car.periodo === 'JULIO' ? car.periodo = 'JULIO - AGOSTO' : ''
-                    || car.periodo === 'SEPTIEMBRE' ? car.periodo = 'SEPTIEMBRE - OCTUBRE' : ''
-                      || car.periodo === 'NOVIEMBRE' ? car.periodo = 'NOVIEMBRE - DICIEMBRE' : ''
+            return car.periodo === 'ENERO' || car.periodo === 'FEBRERO' ? car.periodo = 'ENERO - FEBRERO' : ''
+              || car.periodo === 'MAYO' || car.periodo === 'JUNIO' ? car.periodo = 'MAYO - JUNIO' : ''
+                || car.periodo === 'MARZO' || car.periodo === 'ABRIL' ? car.periodo = 'MARZO - ABRIL' : ''
+                  || car.periodo === 'JULIO' || car.periodo === 'AGOSTO' ? car.periodo = 'JULIO - AGOSTO' : ''
+                    || car.periodo === 'SEPTIEMBRE' || car.periodo === 'OCTUBRE' ? car.periodo = 'SEPTIEMBRE - OCTUBRE' : ''
+                      || car.periodo === 'NOVIEMBRE' || car.periodo === 'DICIEMBRE' ? car.periodo = 'NOVIEMBRE - DICIEMBRE' : ''
           });
           let falta = 0;
 
@@ -1098,6 +1099,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var data: number = 0;
+    let aditionalHeight = 0
     var retenido: number = 0;
     var base: number = 0;
 
@@ -1123,12 +1125,17 @@ export class GenerarCertificadoComponent implements OnInit {
       const element = this.listaDatosAnual[index];
 
       data = data + 5
+      aditionalHeight = data
       doc.setFontSize(8);
       doc.text(30, 110 + data, element.periodo);
-      doc.text(55, 110 + data, element.concepto);
-      doc.text(128, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
+      let conceptos = doc.splitTextToSize(element.concepto, 60)
+      for (let i = 0; i < conceptos.length; i++) {
+        aditionalHeight = data + (i != 0 ? 5 : 0)
+        doc.text(43, 110 + aditionalHeight, conceptos[i]);
+      }
+      doc.text(128, 110 + data, `${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, { align: 'right' });
       doc.text(155, 110 + data, `${element.porcentaje.toString()}`);
-      doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+      doc.text(190, 110 + data, `${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, { align: 'right' });
       
       const yAxis = 110 + data
 
@@ -1138,8 +1145,8 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFontType('bold');
         doc.text(30, 120 + data, `TOTAL`);
     
-        doc.text(115, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
-        doc.text(179, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.text(115, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+        doc.text(179, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
     
     
     
@@ -1189,8 +1196,8 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.setFontType('bold');
     doc.text(30, 120 + data, `TOTAL`);
 
-    doc.text(115, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
-    doc.text(179, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(115, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+    doc.text(179, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
 
@@ -1273,8 +1280,8 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
-    //logo.src = '/assets/images/fsfb.png';
-    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
     let doc = document ? document : new jsPDF('', '', [600, 1000]);
@@ -1368,11 +1375,11 @@ export class GenerarCertificadoComponent implements OnInit {
       doc.text(20, 105 + data, element.periodo);
       doc.text(45, 105 + data, element.concepto.slice(0, -16));
       doc.text(45, 110 + data, 'LEY 1607 DE 2012');
-      doc.text(95, 105 + data, new Intl.NumberFormat("de-DE").format(element.valortotal.toString()));
+      doc.text(95, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
       doc.text(125, 105 + data, element.tariva.toString());
-      doc.text(138, 105 + data, new Intl.NumberFormat("de-DE").format(element.iva.toString()));
+      doc.text(138, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
       doc.text(162, 105 + data, `${element.porcentaje.toString()}`);
-      doc.text(180, 105 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()));
+      doc.text(180, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
 
       const yAxis = 110 + data
 
@@ -1382,9 +1389,9 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFontType('bold');
         doc.setFontSize(8);
         doc.text(40, 120 + data, `TOTAL`);
-        doc.text(95, 120 + data, `${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
-        doc.text(138, 120 + data, `${new Intl.NumberFormat("de-DE").format(idIva)}`);
-        doc.text(178, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.text(95, 120 + data, `$${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
+        doc.text(138, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
+        doc.text(178, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
     
     
         doc.setFont('helvetica');
@@ -1435,9 +1442,9 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.setFontType('bold');
     doc.setFontSize(8);
     doc.text(40, 120 + data, `TOTAL`);
-    doc.text(95, 120 + data, `${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
-    doc.text(138, 120 + data, `${new Intl.NumberFormat("de-DE").format(idIva)}`);
-    doc.text(178, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(95, 120 + data, `$${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
+    doc.text(138, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
+    doc.text(178, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
     doc.setFont('helvetica');
@@ -1531,7 +1538,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
-    //logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = document ? document : new jsPDF();
@@ -1618,10 +1625,10 @@ export class GenerarCertificadoComponent implements OnInit {
       doc.setFontSize(8);
       doc.text(20, 110 + data, element.periodo);
       doc.text(50, 110 + data, element.contrato == undefined ? "" : element.contrato);
-      doc.text(99, 110 + data, new Intl.NumberFormat("de-DE").format(element.montobase.toString()), { align: 'right' });
+      doc.text(99, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.montobase.toString())}`, { align: 'right' });
       doc.text(114, 110 + data, `${element.tar}` == undefined ? "" : `${element.tar}`);
-      doc.text(150, 110 + data, new Intl.NumberFormat("de-DE").format(element.impuestopagado.toString()), { align: 'right' });
-      doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.impuestoretenido.toString()), { align: 'right' });
+      doc.text(150, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.impuestopagado.toString())}`, { align: 'right' });
+      doc.text(190, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.impuestoretenido.toString())}`, { align: 'right' });
 
       const yAxis = data + 110
       
@@ -1632,9 +1639,9 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFontSize(8);
     
         doc.text(20, 120 + data, "TOTAL");
-        doc.text(99, 120 + data, new Intl.NumberFormat("de-DE").format(montoBasteTotal), { align: 'right' });
-        doc.text(150, 120 + data, new Intl.NumberFormat("de-DE").format(impuestoPagadoTotal), { align: 'right' });
-        doc.text(190, 120 + data, new Intl.NumberFormat("de-DE").format(impuestoretenidoTotal), { align: 'right' });
+        doc.text(99, 120 + data, `${new Intl.NumberFormat("de-DE").format(montoBasteTotal)}`, { align: 'right' });
+        doc.text(150, 120 + data, `${new Intl.NumberFormat("de-DE").format(impuestoPagadoTotal)}`, { align: 'right' });
+        doc.text(190, 120 + data, `${new Intl.NumberFormat("de-DE").format(impuestoretenidoTotal)}`, { align: 'right' });
     
     
         doc.setFont('helvetica');
@@ -1685,9 +1692,9 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.setFontSize(8);
 
     doc.text(20, 120 + data, "TOTAL");
-    doc.text(99, 120 + data, new Intl.NumberFormat("de-DE").format(montoBasteTotal), { align: 'right' });
-    doc.text(150, 120 + data, new Intl.NumberFormat("de-DE").format(impuestoPagadoTotal), { align: 'right' });
-    doc.text(190, 120 + data, new Intl.NumberFormat("de-DE").format(impuestoretenidoTotal), { align: 'right' });
+    doc.text(99, 120 + data, `$${new Intl.NumberFormat("de-DE").format(montoBasteTotal)}`, { align: 'right' });
+    doc.text(150, 120 + data, `$${new Intl.NumberFormat("de-DE").format(impuestoPagadoTotal)}`, { align: 'right' });
+    doc.text(190, 120 + data, `$${new Intl.NumberFormat("de-DE").format(impuestoretenidoTotal)}`, { align: 'right' });
 
 
     doc.setFont('helvetica');
@@ -1770,7 +1777,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
-    //logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = document ? document : new jsPDF('', '', [600, 1000]);
@@ -1839,6 +1846,7 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var data: number = 0;
+    let aditionalHeight = 0
     var retenido: number = 0;
     var base: number = 0;
 
@@ -1863,8 +1871,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
     for (let index = 0; index < this.listaDatosAnual.length; index++) {
       const element = this.listaDatosAnual[index];
-
-      data = data + 5
+      data = aditionalHeight + 5
+      aditionalHeight = data
 
       doc.setFontSize(8);
 
@@ -1873,36 +1881,44 @@ export class GenerarCertificadoComponent implements OnInit {
 
       if(this.listaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
         doc.text(19, 110 + data, element.periodo);
-        doc.text(43, 110 + data, element.concepto);
-        doc.text(130, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
+        let conceptos = doc.splitTextToSize(element.concepto, 60)
+        for (let i = 0; i < conceptos.length; i++) {
+          aditionalHeight = data + (i != 0 ? 5 : 0)
+          doc.text(43, 110 + aditionalHeight, conceptos[i]);
+        }
+        doc.text(130, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, { align: 'right' });
         doc.text(137, 110 + data, `${element.porcentaje.toString()}`);
         if(element.base_ingreso == null){
-            element.base_ingreso = " "
+            element.base_ingreso = "N/A"
             doc.text(150, 110 + data, `${element.base_ingreso.toString()}`);
         } else {
-            doc.text(150, 110 + data, `${element.base_ingreso.toString()}`);
+            doc.text(150, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
         } 
         
 
-        doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+        doc.text(190, 110 + data,`$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, { align: 'right' });
       } else{
         doc.text(20, 110 + data, element.periodo);
-        doc.text(45, 110 + data, element.concepto);
+        let conceptos = doc.splitTextToSize(element.concepto, 60)
+        for (let i = 0; i < conceptos.length; i++) {
+          aditionalHeight = data + (i != 0 ? 5 : 0)
+          doc.text(43, 110 + aditionalHeight, conceptos[i]);
+        }
         doc.text(135, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
         doc.text(145, 110 + data, `${element.porcentaje.toString()}`);
-        doc.text(190, 110 + data, new Intl.NumberFormat("de-DE").format(element.retencion.toString()), { align: 'right' });
+        doc.text(190, 110 + data,`$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, { align: 'right' });
       }
 
       
-      const yAxis = data + 110
+      const yAxis = aditionalHeight + 110
       
       if (yAxis > 160)
       {
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.text(30, 120 + data, `Total`);
-        doc.text(116, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
-        doc.text(175, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.text(116, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+        doc.text(175, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
     
         doc.setFont('helvetica');
         doc.setFontType('bold');
@@ -1953,8 +1969,8 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.setFont('helvetica');
     doc.setFontType('bold');
     doc.text(30, 120 + data, `Total`);
-    doc.text(116, 120 + data, `${new Intl.NumberFormat("de-DE").format(base)}`);
-    doc.text(175, 120 + data, `${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(116, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+    doc.text(175, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
 
@@ -2065,7 +2081,7 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
-    //logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/assets/images/fsfb.png';
     logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = new jsPDF('', '', [600, 1000]);

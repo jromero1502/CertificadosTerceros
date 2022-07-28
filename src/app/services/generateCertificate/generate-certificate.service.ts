@@ -12,8 +12,8 @@ import { JsonPipe } from '@angular/common';
   providedIn: 'root'
 })
 export class GenerateCertificateService {
-  // url="http://localhost:8080"
-  url="http://52.247.56.140:8080/terceros"
+  url="http://localhost:8080"
+  // url="http://52.247.56.140:8080/terceros"
   constructor(private http: HttpClient) { 
     if(location.host=="www.fsfb.org.co"){
       this.url="https://www.fsfb.org.co/terceros"

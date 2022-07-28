@@ -15,7 +15,6 @@ export class PruebaComponent implements OnInit {
   constructor(private generateCertificate: GenerateCertificateService) { }
 
   ngOnInit(): void {
-  this.generateCertificate.login ("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==") ;
     /* this.datos.crMunicipio = 1;
     this.datos.monthTwo = "ABRIL";
     this.datos.nitTercero = "8603506247";
