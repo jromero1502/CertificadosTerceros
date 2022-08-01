@@ -81,8 +81,8 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
-  currentUser: string
+  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  // currentUser: string
   
   originalListaDatosAnual: any[]
 
@@ -94,11 +94,11 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
+    // this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
-    // this.userProviderNit = this.currentUser
-    this.userProviderNit = ""
-    // this.buscarPersona()
+    this.userProviderNit = this.currentUser
+    // this.userProviderNit = ""
+    this.buscarPersona()
   }
 
   filterCertificate() {
@@ -411,10 +411,37 @@ export class GenerarCertificadoComponent implements OnInit {
         (data) => {
           this.spinnerService.hide();
 
+          console.log(data)
+          this.filteredPeriod = data.map(function (car) {
+            if (car.periodo == 'ENERO' || car.periodo == 'FEBRERO') {
+              return {periodo: 'ENERO - FEBRERO'}
+            }
 
-          this.filteredPeriod = data.filter(function (car) {
-            return car.periodo !== 'FEBRERO' && car.periodo !== 'ABRIL' && car.periodo !== 'JUNIO' && car.periodo !== 'AGOSTO' && car.periodo !== 'OCTUBRE' && car.periodo !== 'DICIEMBRE';
-          });
+            if (car.periodo == 'MARZO' || car.periodo == 'ABRIL') {
+              return {periodo: 'MARZO - ABRIL'}
+            }
+
+            if (car.periodo == 'MAYO' || car.periodo == 'JUNIO') {
+              return {periodo: 'MAYO - JUNIO'}
+            }
+
+            if (car.periodo == 'JULIO' || car.periodo == 'AGOSTO') {
+              return {periodo: 'JULIO - AGOSTO'}
+            }
+
+            if (car.periodo == 'SEPTIEMBRE' || car.periodo == 'OCTUBRE') {
+              return {periodo: 'SEPTIEMBRE - OCTUBRE'}
+            }
+
+            if (car.periodo == 'NOVIEMBRE' || car.periodo == 'DICIEMBRE') {
+              return {periodo: 'NOVIEMBRE - DICIEMBRE'}
+            }
+          }).filter(m => m != null);
+
+          let set = new Set(this.filteredPeriod.map(p => p.periodo))
+          this.filteredPeriod = [...set].map(p => {
+            return {periodo: p}
+          })
 
           let datosEnero = <any>{};
 
@@ -428,9 +455,11 @@ export class GenerarCertificadoComponent implements OnInit {
           });
           let falta = 0;
 
+          console.log(this.filteredPeriod)
+
           if (this.filteredPeriod.length !== 6) {
             let selected = [];
-            this.banderaAgregado = true;
+            this.banderaAgregado = false;
             selected.push({ "periodo": 'ENERO - FEBRERO', "index": 1 });
             selected.push({ "periodo": 'MARZO - ABRIL', "index": 2 });
             selected.push({ "periodo": 'MAYO - JUNIO', "index": 3 });
@@ -712,54 +741,56 @@ export class GenerarCertificadoComponent implements OnInit {
 
             } else if (this.seleccionPeriodicidad === 2) {
 
+              let fechaPeriodoUno = new Date(this.fechaPeriodoUno.fecha).toISOString().slice(0, -20)
+              let fechaPeriodoDos = new Date(this.fechaPeriodoDos.fecha).toISOString().slice(0, -20)
               if (this.datos.periodOne === 'ENERO') {
-                this.fechaUno = `01/01/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/01/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `28/02/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `28/02/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'JULIO') {
-                this.fechaUno = `01/07/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/07/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `31/08/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `31/08/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'MARZO') {
-                this.fechaUno = `01/03/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/03/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `30/04/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `30/04/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'MAYO') {
-                this.fechaUno = `01/05/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/05/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `30/06/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `30/06/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'NOVIEMBRE') {
-                this.fechaUno = `01/11/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/11/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `31/12/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `31/12/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'SEPTIEMBRE') {
-                this.fechaUno = `01/09/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/09/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `31/10/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `31/10/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'FEBRERO') {
-                this.fechaUno = `01/01/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/01/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `28/02/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `28/02/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'ABRIL') {
-                this.fechaUno = `01/03/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/03/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `30/04/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `30/04/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'JUNIO') {
-                this.fechaUno = `01/05/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/05/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `30/06/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `30/06/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'AGOSTO') {
-                this.fechaUno = `01/07/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/07/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `31/08/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `31/08/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'OCTUBRE') {
-                this.fechaUno = `01/09/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/09/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `31/10/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `31/10/${fechaPeriodoDos}`;
               } else if (this.datos.periodOne === 'DICIEMBRE') {
-                this.fechaUno = `01/11/${this.fechaPeriodoUno.fecha.slice(0, -17)}`;
+                this.fechaUno = `01/11/${fechaPeriodoUno}`;
                 this.fechaUno.split('').reverse().join('');
-                this.fechaDos = `31/12/${this.fechaPeriodoDos.fecha.slice(0, -17)}`;
+                this.fechaDos = `31/12/${fechaPeriodoDos}`;
 
               }
             }
@@ -1280,8 +1311,8 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
-    logo.src = '/assets/images/fsfb.png';
-    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    // logo.src = '/assets/images/fsfb.png';
+    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
     let doc = document ? document : new jsPDF('', '', [600, 1000]);
@@ -1373,11 +1404,11 @@ export class GenerarCertificadoComponent implements OnInit {
 
       doc.setFontSize(8);
       doc.text(20, 105 + data, element.periodo);
-      doc.text(45, 105 + data, element.concepto.slice(0, -16));
+      doc.text(45, 105 + data, element.concepto.replace("LEY 1607 DE 2012", "").trim());
       doc.text(45, 110 + data, 'LEY 1607 DE 2012');
       doc.text(95, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
       doc.text(125, 105 + data, element.tariva.toString());
-      doc.text(138, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
+      doc.text(144, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
       doc.text(162, 105 + data, `${element.porcentaje.toString()}`);
       doc.text(180, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
 
@@ -1390,8 +1421,8 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFontSize(8);
         doc.text(40, 120 + data, `TOTAL`);
         doc.text(95, 120 + data, `$${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
-        doc.text(138, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
-        doc.text(178, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
+        doc.text(144, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
+        doc.text(180, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
     
     
         doc.setFont('helvetica');
@@ -1443,8 +1474,8 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.setFontSize(8);
     doc.text(40, 120 + data, `TOTAL`);
     doc.text(95, 120 + data, `$${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
-    doc.text(138, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
-    doc.text(178, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(144, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
+    doc.text(180, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
     doc.setFont('helvetica');
