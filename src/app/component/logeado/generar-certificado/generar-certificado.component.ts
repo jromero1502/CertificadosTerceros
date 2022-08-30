@@ -96,9 +96,9 @@ export class GenerarCertificadoComponent implements OnInit {
   ngOnInit(): void {
     // this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
-    this.userProviderNit = this.currentUser
-    // this.userProviderNit = ""
-    this.buscarPersona()
+    // this.userProviderNit = this.currentUser
+    this.userProviderNit = ""
+    // this.buscarPersona()
   }
 
   filterCertificate() {
@@ -1155,14 +1155,14 @@ export class GenerarCertificadoComponent implements OnInit {
     for (let index = 0; index < this.listaDatosAnual.length; index++) {
       const element = this.listaDatosAnual[index];
 
-      data = data + 5
+      data = aditionalHeight + 5
       aditionalHeight = data
       doc.setFontSize(8);
       doc.text(30, 110 + data, element.periodo);
       let conceptos = doc.splitTextToSize(element.concepto, 60)
       for (let i = 0; i < conceptos.length; i++) {
         aditionalHeight = data + (i != 0 ? 5 : 0)
-        doc.text(43, 110 + aditionalHeight, conceptos[i]);
+        doc.text(50, 110 + aditionalHeight, conceptos[i]);
       }
       doc.text(128, 110 + data, `${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, { align: 'right' });
       doc.text(155, 110 + data, `${element.porcentaje.toString()}`);
