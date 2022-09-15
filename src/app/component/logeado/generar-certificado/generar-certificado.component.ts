@@ -1394,33 +1394,29 @@ export class GenerarCertificadoComponent implements OnInit {
       idIva += element.iva;
     }
 
-    let aditionalHeight = 0
     var retenidoTexto = trans.NumerosALetras(retenido) + " PESOS MCTE";
-
+    let aditionalHeight = 0
 
     for (let index = 0; index < this.listaDatosAnual.length; index++) {
       const element = this.listaDatosAnual[index];
 
-      data = aditionalHeight + 5
+      data = aditionalHeight + 10
       aditionalHeight = data
-
       doc.setFontSize(8);
-      doc.text(20, 105 + data, element.periodo);
-      let conceptos = doc.splitTextToSize(element.concepto, 60)
-      console.log(conceptos)
-      for (let i = 0; i < conceptos.length; i++) {
-        aditionalHeight = data + (i != 0 ? 5 : 0)
-        doc.text(50, 110 + aditionalHeight, conceptos[i]);
-      }
-      // doc.text(45, 105 + data, element.concepto.replace("LEY 1607 DE 2012", "").trim());
-      doc.text(45, 110 + aditionalHeight, 'LEY 1607 DE 2012');
-      doc.text(95, 110 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
-      doc.text(125, 110 + aditionalHeight, element.tariva.toString());
-      doc.text(144, 110 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
-      doc.text(162, 110 + aditionalHeight, `${element.porcentaje.toString()}`);
-      doc.text(180, 110 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
 
-      const yAxis = 110 + aditionalHeight
+      doc.text(20, 105 + data, element.periodo);
+      let conceptos = doc.splitTextToSize(element.concepto, 45)
+      for (let i = 0; i < conceptos.length; i++) {
+        aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
+        doc.text(45, 105 + aditionalHeight, conceptos[i]);
+      }
+      doc.text(95, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
+      doc.text(125, 105 + data, element.tariva.toString());
+      doc.text(144, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
+      doc.text(162, 105 + data, `${element.porcentaje.toString()}`);
+      doc.text(180, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
+
+      const yAxis = 110 + data
 
       if (yAxis > 160)
       {
@@ -1922,7 +1918,7 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(19, 110 + data, element.periodo);
         let conceptos = doc.splitTextToSize(element.concepto, 60)
         for (let i = 0; i < conceptos.length; i++) {
-          aditionalHeight = data + (i != 0 ? 5 : 0)
+          aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
           doc.text(43, 110 + aditionalHeight, conceptos[i]);
         }
         doc.text(130, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, { align: 'right' });
@@ -1940,7 +1936,7 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(20, 110 + data, element.periodo);
         let conceptos = doc.splitTextToSize(element.concepto, 60)
         for (let i = 0; i < conceptos.length; i++) {
-          aditionalHeight = data + (i != 0 ? 5 : 0)
+          aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
           doc.text(43, 110 + aditionalHeight, conceptos[i]);
         }
         doc.text(135, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
@@ -2007,50 +2003,50 @@ export class GenerarCertificadoComponent implements OnInit {
     }
     doc.setFont('helvetica');
     doc.setFontType('bold');
-    doc.text(30, 120 + data, `Total`);
-    doc.text(116, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
-    doc.text(175, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(30, 120 + aditionalHeight, `Total`);
+    doc.text(116, 120 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+    doc.text(175, 120 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
 
     doc.setFont('helvetica');
     doc.setFontType('bold');
     doc.setFontSize(10);
-    doc.text(20, 130 + data, `VALOR RETENIDO:  $${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(20, 130 + aditionalHeight, `VALOR RETENIDO:  $${new Intl.NumberFormat("de-DE").format(retenido)}`);
     doc.setFontSize(8);
-    doc.text(20, 135 + data, `${retenidoTexto}`);
-    //doc.text(20, 140 + data, `${resulRetenidoTextoDos.slice(0, -12).toUpperCase()}`);
+    doc.text(20, 135 + aditionalHeight, `${retenidoTexto}`);
+    //doc.text(20, 140 + aditionalHeight, `${resulRetenidoTextoDos.slice(0, -12).toUpperCase()}`);
     doc.setFont('helvetica');
     doc.setFontType('normal');
 
     doc.setFontSize(7);
-    doc.text(20, 145 + data, 'LA BASE DE RETENCIÓN EN LA FUENTE, CORRESPONDE AL 100% DE SUS INGRESOS MENOS LAS DEDUCCIONES DE LEY SEGÚN EL ARTÍCULO');
-    doc.text(20, 150 + data, '126 DEL ESTATUTO TRIBUTARIO (AFC, APORTES OBLIGATORIOS Y/O VOLUNTARIOS DE PENSIÓN), EN CASO DE TENERLOS.');
+    doc.text(20, 145 + aditionalHeight, 'LA BASE DE RETENCIÓN EN LA FUENTE, CORRESPONDE AL 100% DE SUS INGRESOS MENOS LAS DEDUCCIONES DE LEY SEGÚN EL ARTÍCULO');
+    doc.text(20, 150 + aditionalHeight, '126 DEL ESTATUTO TRIBUTARIO (AFC, APORTES OBLIGATORIOS Y/O VOLUNTARIOS DE PENSIÓN), EN CASO DE TENERLOS.');
 
     doc.setFont('helvetica');
     doc.setFontType('bold');
     doc.setFontSize(10);
-    doc.text(20, 170 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
-    doc.text(20, 175 + data, 'NIT: 860037950-2');
-    doc.text(20, 180 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
+    doc.text(20, 170 + aditionalHeight, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
+    doc.text(20, 175 + aditionalHeight, 'NIT: 860037950-2');
+    doc.text(20, 180 + aditionalHeight, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
 
     doc.setFont('helvetica');
     doc.setFontType('normal');
     doc.setFontSize(7);
-    doc.text(20, 190 + data, 'NOTA: LAS PERSONAS JURÍDICAS PODRÁN ENTREGAR LOS CERTIFICADOS DE RETENCIÓN EN LA FUENTE, EN FORMA CONTINUA IMPRESA');
-    doc.text(20, 195 + data, 'POR COMPUTADOR, SIN NECESIDAD DE FIRMA AUTÓGRAFA (D.R. 836/91)LOS DOCUMENTOS QUE SE ENCUENTRAN ALMACENADOS EN');
-    doc.text(20, 200 + data, 'MEDIOS MAGNÉTICOS O ELECTRÓNICOS PUEDAN SER IMPRESOS EN CUALQUIER PARTE UTILIZANDO EL COMPUTADOR, YA SEA EN LA SEDE');
-    doc.text(20, 205 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
-    doc.text(20, 210 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
-    doc.text(20, 215 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
+    doc.text(20, 190 + aditionalHeight, 'NOTA: LAS PERSONAS JURÍDICAS PODRÁN ENTREGAR LOS CERTIFICADOS DE RETENCIÓN EN LA FUENTE, EN FORMA CONTINUA IMPRESA');
+    doc.text(20, 195 + aditionalHeight, 'POR COMPUTADOR, SIN NECESIDAD DE FIRMA AUTÓGRAFA (D.R. 836/91)LOS DOCUMENTOS QUE SE ENCUENTRAN ALMACENADOS EN');
+    doc.text(20, 200 + aditionalHeight, 'MEDIOS MAGNÉTICOS O ELECTRÓNICOS PUEDAN SER IMPRESOS EN CUALQUIER PARTE UTILIZANDO EL COMPUTADOR, YA SEA EN LA SEDE');
+    doc.text(20, 205 + aditionalHeight, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
+    doc.text(20, 210 + aditionalHeight, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
+    doc.text(20, 215 + aditionalHeight, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
 
 
     doc.setFont('helvetica');
     doc.setFontType('bold');
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 260);
-    doc.text(50, 230 + data, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
-    doc.text(90, 235 + data, 'www.fsfb.org.co');
+    doc.text(50, 230 + aditionalHeight, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
+    doc.text(90, 235 + aditionalHeight, 'www.fsfb.org.co');
 
     doc.save(`RETEFUENTE-${this.datos.nitTercero}.pdf`);
 
