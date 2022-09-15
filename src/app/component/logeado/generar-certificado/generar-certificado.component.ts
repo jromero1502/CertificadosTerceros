@@ -81,8 +81,8 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
-  // currentUser: string
+  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  currentUser: string
   
   originalListaDatosAnual: any[]
 
@@ -94,7 +94,7 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
+    this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
     // this.userProviderNit = this.currentUser
     this.userProviderNit = ""
@@ -1311,8 +1311,8 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
-    // logo.src = '/assets/images/fsfb.png';
-    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
     let doc = document ? document : new jsPDF('', '', [600, 1000]);
@@ -1358,11 +1358,11 @@ export class GenerarCertificadoComponent implements OnInit {
 
     doc.text(20, 105, 'PERIODO');
     doc.text(45, 105, 'CONCEPTO');
-    doc.text(85, 105, 'VR.ANTES IVA');
-    doc.text(115, 105, 'TAR.IVA');
+    doc.text(95, 105, 'VR.ANTES IVA');
+    doc.text(125, 105, 'TAR.IVA');
     doc.text(144, 105, 'IVA');
     doc.text(162, 105, '%');
-    doc.text(170, 105, 'RETENCIÓN');
+    doc.text(180, 105, 'RETENCIÓN');
 
 
     //  Porcentajes PDF
@@ -1394,25 +1394,33 @@ export class GenerarCertificadoComponent implements OnInit {
       idIva += element.iva;
     }
 
+    let aditionalHeight = 0
     var retenidoTexto = trans.NumerosALetras(retenido) + " PESOS MCTE";
 
 
     for (let index = 0; index < this.listaDatosAnual.length; index++) {
       const element = this.listaDatosAnual[index];
 
-      data = data + 10
+      data = aditionalHeight + 5
+      aditionalHeight = data
 
       doc.setFontSize(8);
       doc.text(20, 105 + data, element.periodo);
-      doc.text(45, 105 + data, element.concepto.replace("LEY 1607 DE 2012", "").trim());
-      doc.text(45, 110 + data, 'LEY 1607 DE 2012');
-      doc.text(95, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
-      doc.text(125, 105 + data, element.tariva.toString());
-      doc.text(144, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
-      doc.text(162, 105 + data, `${element.porcentaje.toString()}`);
-      doc.text(180, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
+      let conceptos = doc.splitTextToSize(element.concepto, 60)
+      console.log(conceptos)
+      for (let i = 0; i < conceptos.length; i++) {
+        aditionalHeight = data + (i != 0 ? 5 : 0)
+        doc.text(50, 110 + aditionalHeight, conceptos[i]);
+      }
+      // doc.text(45, 105 + data, element.concepto.replace("LEY 1607 DE 2012", "").trim());
+      doc.text(45, 110 + aditionalHeight, 'LEY 1607 DE 2012');
+      doc.text(95, 110 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
+      doc.text(125, 110 + aditionalHeight, element.tariva.toString());
+      doc.text(144, 110 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
+      doc.text(162, 110 + aditionalHeight, `${element.porcentaje.toString()}`);
+      doc.text(180, 110 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
 
-      const yAxis = 110 + data
+      const yAxis = 110 + aditionalHeight
 
       if (yAxis > 160)
       {
