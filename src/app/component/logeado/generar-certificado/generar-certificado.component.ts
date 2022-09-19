@@ -81,8 +81,8 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
-  // currentUser: string
+  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  currentUser: string
   
   originalListaDatosAnual: any[]
 
@@ -94,7 +94,7 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
+    this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
     // this.userProviderNit = this.currentUser
     this.userProviderNit = ""
@@ -1311,8 +1311,8 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
-    // logo.src = '/assets/images/fsfb.png';
-    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
     let doc = document ? document : new jsPDF('', '', [600, 1000]);
@@ -1358,11 +1358,11 @@ export class GenerarCertificadoComponent implements OnInit {
 
     doc.text(20, 105, 'PERIODO');
     doc.text(45, 105, 'CONCEPTO');
-    doc.text(85, 105, 'VR.ANTES IVA');
-    doc.text(115, 105, 'TAR.IVA');
+    doc.text(95, 105, 'VR.ANTES IVA');
+    doc.text(125, 105, 'TAR.IVA');
     doc.text(144, 105, 'IVA');
     doc.text(162, 105, '%');
-    doc.text(170, 105, 'RETENCIÓN');
+    doc.text(180, 105, 'RETENCIÓN');
 
 
     //  Porcentajes PDF
