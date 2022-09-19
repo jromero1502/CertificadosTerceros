@@ -43,7 +43,7 @@ export class GenerarCertificadoComponent implements OnInit {
   myControl = new FormControl();
   period: any[] = [];
   dataListCertificate: any[] = [];
-  listaDatosAnual: any = {};
+  listaDatosAnual: any = [];
   filteredPeriod: any[] = [];
   filteredMunicipal: any = {}
   fecha = new Date;
@@ -1017,7 +1017,7 @@ export class GenerarCertificadoComponent implements OnInit {
   // tslint:disable-next-line:typedef
   downloadPDF() {
 
-    this.originalListaDatosAnual = this.listaDatosAnual.map(e => e)
+    this.originalListaDatosAnual = this.listaDatosAnual?.map(e => e)
 
     if (this.datos.typeCertificate === 1) {
 
