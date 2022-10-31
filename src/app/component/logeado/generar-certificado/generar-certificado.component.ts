@@ -96,8 +96,8 @@ export class GenerarCertificadoComponent implements OnInit {
   ngOnInit(): void {
     // this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
-    // this.userProviderNit = this.currentUser
-    this.userProviderNit = ""
+    this.userProviderNit = this.currentUser
+    // this.userProviderNit = ""
     // this.buscarPersona()
   }
 
@@ -1404,13 +1404,13 @@ export class GenerarCertificadoComponent implements OnInit {
       doc.setFontSize(8);
 
       doc.text(20, 105 + data, element.periodo);
-      let conceptos = doc.splitTextToSize(element.concepto, 45)
+      let conceptos = doc.splitTextToSize(element.concepto, 35)
       for (let i = 0; i < conceptos.length; i++) {
         aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
         doc.text(45, 105 + aditionalHeight, conceptos[i]);
       }
       doc.text(85, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
-      doc.text(115, 105 + data, element.tariva.toString());
+      doc.text(120, 105 + data, element.tariva.toString());
       doc.text(134, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
       doc.text(160, 105 + data, `${element.porcentaje.toString()}`);
       doc.text(180, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
