@@ -81,9 +81,9 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
-  currentUser: string
-  
+  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  // currentUser: string
+
   originalListaDatosAnual: any[]
 
 
@@ -94,7 +94,7 @@ export class GenerarCertificadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
+    // this.generateCertificate.login("eyJ1c2VybmFtZSI6ImFkbWludGVyY2Vyb3MiLCJwYXNzd29yZCI6ImFkbWludGVyY2Vyb3MifQ==");
     this.filterCertificate();
     // this.userProviderNit = this.currentUser
     this.userProviderNit = ""
@@ -102,33 +102,33 @@ export class GenerarCertificadoComponent implements OnInit {
   }
 
   filterCertificate() {
-    this.form= this.fb.group({
-      userProviderNit: ['',[Validators.required]]
+    this.form = this.fb.group({
+      userProviderNit: ['', [Validators.required]]
     });
     this.resolvePassword = this.fb.group({
-      servicio: ['',[Validators.required]],
-      period: ['',[Validators.required]],
-      periocidad: ['',[Validators.required]],
-      municipio: ['',[Validators.required]],
-      documentType:['',[Validators.required]]
+      servicio: ['', [Validators.required]],
+      period: ['', [Validators.required]],
+      periocidad: ['', [Validators.required]],
+      municipio: ['', [Validators.required]],
+      documentType: ['', [Validators.required]]
     });
 
   }
-  mostrar=false;
+  mostrar = false;
   buscarPersona() {
     this.filterCertificate();
     this.datos.nitTercero = this.userProviderNit;
     this.generateCertificate.datosDataPJ(this.datos.nitTercero).subscribe(
       (data) => {
         this.dataUsuariosPJ = data;
-        this.mostrar=true
+        this.mostrar = true
       }, (error: HttpErrorResponse) => {
 
         this.dataUsuariosPJ = null;
         this.generateCertificate.datosDataPN(this.datos.nitTercero).subscribe(
           (data) => {
             this.dataUsuariosPN = data;
-            this.mostrar=true
+            this.mostrar = true
           }, (error: HttpErrorResponse) => {
 
             this.dataUsuariosPN = null;
@@ -143,8 +143,8 @@ export class GenerarCertificadoComponent implements OnInit {
           });
       });
 
-    
-      
+
+
   }
 
   checkList(itemsChek: string[]): ValidatorFn {
@@ -273,14 +273,14 @@ export class GenerarCertificadoComponent implements OnInit {
             for (let index = 0; index < data.anios.length; index++) {
               this.servicios.push({ "year": data.anios[index] });
             }
-  
+
             this.servicios = this.servicios.sort(function (a, b) {
               if (a.year > b.year) {
                 return -1;
               }
             }).slice(0, 10);
             this.dataCuentasParticipacion = data;
-          } catch(e) {
+          } catch (e) {
             console.log("No hay cuentas de participacion")
           }
 
@@ -414,33 +414,33 @@ export class GenerarCertificadoComponent implements OnInit {
           console.log(data)
           this.filteredPeriod = data.map(function (car) {
             if (car.periodo == 'ENERO' || car.periodo == 'FEBRERO') {
-              return {periodo: 'ENERO - FEBRERO'}
+              return { periodo: 'ENERO - FEBRERO' }
             }
 
             if (car.periodo == 'MARZO' || car.periodo == 'ABRIL') {
-              return {periodo: 'MARZO - ABRIL'}
+              return { periodo: 'MARZO - ABRIL' }
             }
 
             if (car.periodo == 'MAYO' || car.periodo == 'JUNIO') {
-              return {periodo: 'MAYO - JUNIO'}
+              return { periodo: 'MAYO - JUNIO' }
             }
 
             if (car.periodo == 'JULIO' || car.periodo == 'AGOSTO') {
-              return {periodo: 'JULIO - AGOSTO'}
+              return { periodo: 'JULIO - AGOSTO' }
             }
 
             if (car.periodo == 'SEPTIEMBRE' || car.periodo == 'OCTUBRE') {
-              return {periodo: 'SEPTIEMBRE - OCTUBRE'}
+              return { periodo: 'SEPTIEMBRE - OCTUBRE' }
             }
 
             if (car.periodo == 'NOVIEMBRE' || car.periodo == 'DICIEMBRE') {
-              return {periodo: 'NOVIEMBRE - DICIEMBRE'}
+              return { periodo: 'NOVIEMBRE - DICIEMBRE' }
             }
           }).filter(m => m != null);
 
           let set = new Set(this.filteredPeriod.map(p => p.periodo))
           this.filteredPeriod = [...set].map(p => {
-            return {periodo: p}
+            return { periodo: p }
           })
 
           let datosEnero = <any>{};
@@ -572,7 +572,7 @@ export class GenerarCertificadoComponent implements OnInit {
     this.generateCertificate.CertificateByYear(this.datos).subscribe(
       (data) => {
 
-          //console.log(data);
+        //console.log(data);
 
         this.spinnerService.hide();
         this.listaDatosAnual = data;
@@ -1118,10 +1118,10 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.text(97, 90, `${identificacion}`);
 
     doc.text(30, 105, 'PERIODO');
-    doc.text(55, 105, 'CONCEPTO');
-    doc.text(116, 105, 'BASE');
-    doc.text(150, 105, '% x MIL');
-    doc.text(170, 105, 'RETENCIÓN');
+    doc.text(60, 105, 'CONCEPTO');
+    doc.text(100, 105, 'BASE');
+    doc.text(130, 105, '% x MIL');
+    doc.text(150, 105, 'VALOR RETENIDO');
 
     //  Porcentajes PDF
     doc.setFont('helvetica');
@@ -1162,25 +1162,24 @@ export class GenerarCertificadoComponent implements OnInit {
       let conceptos = doc.splitTextToSize(element.concepto, 60)
       for (let i = 0; i < conceptos.length; i++) {
         aditionalHeight = data + (i != 0 ? 5 : 0)
-        doc.text(50, 110 + aditionalHeight, conceptos[i]);
+        doc.text(60, 110 + aditionalHeight, conceptos[i]);
       }
-      doc.text(128, 110 + data, `${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, { align: 'right' });
-      doc.text(155, 110 + data, `${element.porcentaje.toString()}`);
-      doc.text(190, 110 + data, `${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, { align: 'right' });
-      
+      doc.text(100, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base.toString())}`);
+      doc.text(133, 110 + data, `${element.porcentaje.toString()}`);
+      doc.text(160, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
+
       const yAxis = 110 + data
 
-      if (yAxis > 160)
-      {
+      if (yAxis > 160) {
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.text(30, 120 + data, `TOTAL`);
-    
-        doc.text(115, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
-        doc.text(179, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
-    
-    
-    
+
+        doc.text(100, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+        doc.text(160, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
+
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -1190,14 +1189,14 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
         doc.text(20, 155 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
         doc.text(20, 160 + data, 'NIT: 860037950-2');
         doc.text(20, 165 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
@@ -1207,8 +1206,8 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(20, 190 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
         doc.text(20, 195 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
         doc.text(20, 200 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
-    
-    
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -1227,8 +1226,8 @@ export class GenerarCertificadoComponent implements OnInit {
     doc.setFontType('bold');
     doc.text(30, 120 + data, `TOTAL`);
 
-    doc.text(115, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
-    doc.text(179, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(100, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
+    doc.text(160, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
 
 
 
@@ -1311,8 +1310,8 @@ export class GenerarCertificadoComponent implements OnInit {
     }
 
     var logo = new Image();
-    logo.src = '/assets/images/fsfb.png';
-    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    // logo.src = '/assets/images/fsfb.png';
+    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
 
     let doc = document ? document : new jsPDF('', '', [600, 1000]);
@@ -1358,11 +1357,11 @@ export class GenerarCertificadoComponent implements OnInit {
 
     doc.text(20, 105, 'PERIODO');
     doc.text(45, 105, 'CONCEPTO');
-    doc.text(95, 105, 'VR.ANTES IVA');
-    doc.text(125, 105, 'TAR.IVA');
-    doc.text(144, 105, 'IVA');
-    doc.text(162, 105, '%');
-    doc.text(180, 105, 'RETENCIÓN');
+    doc.text(85, 105, 'BASE');
+    doc.text(115, 105, '% IVA');
+    doc.text(134, 103, 'BASE \nRTE IVA');
+    doc.text(152, 105, '% RTE IVA');
+    doc.text(180, 103, 'VALOR \nRETENIDO');
 
 
     //  Porcentajes PDF
@@ -1410,16 +1409,15 @@ export class GenerarCertificadoComponent implements OnInit {
         aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
         doc.text(45, 105 + aditionalHeight, conceptos[i]);
       }
-      doc.text(95, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
-      doc.text(125, 105 + data, element.tariva.toString());
-      doc.text(144, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
-      doc.text(162, 105 + data, `${element.porcentaje.toString()}`);
+      doc.text(85, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.valortotal.toString())}`);
+      doc.text(115, 105 + data, element.tariva.toString());
+      doc.text(134, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.iva.toString())}`);
+      doc.text(160, 105 + data, `${element.porcentaje.toString()}`);
       doc.text(180, 105 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
 
       const yAxis = 110 + data
 
-      if (yAxis > 160)
-      {
+      if (yAxis > 160) {
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(8);
@@ -1427,8 +1425,8 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(95, 120 + data, `$${new Intl.NumberFormat("de-DE").format(vrAntesIva)}`);
         doc.text(144, 120 + data, `$${new Intl.NumberFormat("de-DE").format(idIva)}`);
         doc.text(180, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
-    
-    
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -1438,14 +1436,14 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
         doc.text(20, 155 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
         doc.text(20, 160 + data, 'NIT: 860037950-2');
         doc.text(20, 165 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
@@ -1455,8 +1453,8 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(20, 190 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
         doc.text(20, 195 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
         doc.text(20, 200 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
-    
-    
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -1666,19 +1664,18 @@ export class GenerarCertificadoComponent implements OnInit {
       doc.text(190, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.impuestoretenido.toString())}`, { align: 'right' });
 
       const yAxis = data + 110
-      
-      if (yAxis > 160)
-      {
+
+      if (yAxis > 160) {
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(8);
-    
+
         doc.text(20, 120 + data, "TOTAL");
         doc.text(99, 120 + data, `${new Intl.NumberFormat("de-DE").format(montoBasteTotal)}`, { align: 'right' });
         doc.text(150, 120 + data, `${new Intl.NumberFormat("de-DE").format(impuestoPagadoTotal)}`, { align: 'right' });
         doc.text(190, 120 + data, `${new Intl.NumberFormat("de-DE").format(impuestoretenidoTotal)}`, { align: 'right' });
-    
-    
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -1688,14 +1685,14 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
         doc.text(20, 155 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
         doc.text(20, 160 + data, 'NIT: 860037950-2');
         doc.text(20, 165 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
@@ -1705,15 +1702,15 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(20, 190 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
         doc.text(20, 195 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
         doc.text(20, 200 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
-    
-    
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 260);
         doc.text(50, 215 + data, 'Calle 119 No. 7–75 Teléfono: 6030303 Fax: 6575714 Bogotá, D.C');
         doc.text(90, 220 + data, 'www.fsfb.org.co');
-    
+
         doc.setTextColor(0, 0, 0);
         doc.addPage()
         data = 0
@@ -1855,24 +1852,24 @@ export class GenerarCertificadoComponent implements OnInit {
     var tamañotITULO = datos.length;
     doc.text(titulo - tamañotITULO, 85, `${datos.toUpperCase()}`);
     doc.text(97, 90, `${identificacion}`);
-    
 
-    if(this.originalListaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
-      doc.text(19, 105, 'PERIODO');
-      doc.text(43, 105, 'CONCEPTO');
-      doc.text(115, 105, 'BASE');
-      doc.text(137, 105, '%');
-      doc.text(149, 103, 'BASE \nINGRESO');
-      doc.text(173, 105, 'RETENCIÓN');
-    }else{
-      doc.text(20, 105, 'PERIODO');
-      doc.text(45, 105, 'CONCEPTO');
-      doc.text(120, 105, 'BASE');
-      doc.text(145, 105, '%');
-      doc.text(170, 105, 'RETENCIÓN');
+
+    if (this.originalListaDatosAnual.filter(el => el.base_ingreso != null).length > 0) {
+      doc.text(25, 105, 'PERIODO');
+      doc.text(70, 105, 'CONCEPTO', {align: 'center'});
+      doc.text(110, 103, 'INGRESOS \nBRUTOS', {align: 'center'});
+      doc.text(137, 103, 'BASE \nRETENCIÓN', {align: 'center'});
+      doc.text(160, 105, '%', {align: 'center'});
+      doc.text(183, 103, 'RETENCIÓN \nRENTA', {align: 'center'});
+    } else {
+      doc.text(25, 105, 'PERIODO');
+      doc.text(80, 105, 'CONCEPTO', {align: 'center'});
+      doc.text(130, 103, 'BASE \nRETENCIÓN', {align: 'center'});
+      doc.text(155, 105, '%', {align: 'center'});
+      doc.text(180, 103, 'RETENCIÓN \nRENTA', {align: 'center'});
     }
 
-    
+
 
     //  Porcentajes PDF
     doc.setFont('helvetica');
@@ -1888,7 +1885,7 @@ export class GenerarCertificadoComponent implements OnInit {
     for (let index = 0; index < this.originalListaDatosAnual.length; index++) {
       const element = this.originalListaDatosAnual[index];
 
-      
+
 
       retenido += element.retencion;
 
@@ -1911,50 +1908,48 @@ export class GenerarCertificadoComponent implements OnInit {
 
       doc.setFontSize(8);
 
-      //console.log(element.base_ingreso)
-      
-
-      if(this.listaDatosAnual.filter(el=>el.base_ingreso!=null).length > 0){
-        doc.text(19, 110 + data, element.periodo);
+      if (this.listaDatosAnual.filter(el => el.base_ingreso != null).length > 0) {
+        doc.text(25, 110 + data, element.periodo);
         let conceptos = doc.splitTextToSize(element.concepto, 60)
         for (let i = 0; i < conceptos.length; i++) {
           aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
-          doc.text(43, 110 + aditionalHeight, conceptos[i]);
+          doc.text(70, 110 + aditionalHeight, conceptos[i], {align: 'center'});
         }
-        doc.text(130, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, { align: 'right' });
-        doc.text(137, 110 + data, `${element.porcentaje.toString()}`);
-        if(element.base_ingreso == null){
-            element.base_ingreso = "N/A"
-            doc.text(150, 110 + data, `${element.base_ingreso.toString()}`);
+
+        if (element.base_ingreso == null) {
+          element.base_ingreso = "N/A"
+          doc.text(110, 110 + data, `${element.base_ingreso.toString()}`, {align: 'center'});
         } else {
-            doc.text(150, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`);
-        } 
-        
+          doc.text(110, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base_ingreso.toString())}`, {align: 'center'});
+        }
 
-        doc.text(190, 110 + data,`$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, { align: 'right' });
-      } else{
-        doc.text(20, 110 + data, element.periodo);
-        let conceptos = doc.splitTextToSize(element.concepto, 60)
+        doc.text(137, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, {align: 'center'});
+        doc.text(160, 110 + data, `${element.porcentaje.toString()}`, {align: 'center'});
+
+
+        doc.text(183, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, {align: 'center'});
+      } else {
+        doc.text(25, 110 + data, element.periodo);
+        let conceptos = doc.splitTextToSize(element.concepto, 60, {align: 'center'})
         for (let i = 0; i < conceptos.length; i++) {
           aditionalHeight = aditionalHeight + (i != 0 ? 5 : 0)
-          doc.text(43, 110 + aditionalHeight, conceptos[i]);
+          doc.text(80, 110 + aditionalHeight, conceptos[i], {align: 'center'});
         }
-        doc.text(135, 110 + data, new Intl.NumberFormat("de-DE").format(element.base.toString()), { align: 'right' });
-        doc.text(145, 110 + data, `${element.porcentaje.toString()}`);
-        doc.text(190, 110 + data,`$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, { align: 'right' });
+        doc.text(130, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.base.toString())}`, {align: 'center'});
+        doc.text(155, 110 + data, `${element.porcentaje.toString()}`);
+        doc.text(180, 110 + data, `$${new Intl.NumberFormat("de-DE").format(element.retencion.toString())}`, {align: 'center'});
       }
 
-      
+
       const yAxis = aditionalHeight + 110
-      
-      if (yAxis > 160)
-      {
+
+      if (yAxis > 160) {
         doc.setFont('helvetica');
         doc.setFontType('bold');
-        doc.text(30, 120 + data, `Total`);
-        doc.text(116, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`);
-        doc.text(175, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
-    
+        doc.text(25, 120 + data, `Total`);
+        doc.text(132, 120 + data, `$${new Intl.NumberFormat("de-DE").format(base)}`, {align: 'center'});
+        doc.text(180, 120 + data, `$${new Intl.NumberFormat("de-DE").format(retenido)}`, {align: 'center'});
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -1964,18 +1959,18 @@ export class GenerarCertificadoComponent implements OnInit {
         //doc.text(20, 140 + data, `${resulRetenidoTextoDos.slice(0, -12).toUpperCase()}`);
         doc.setFont('helvetica');
         doc.setFontType('normal');
-    
+
         doc.setFontSize(7);
         doc.text(20, 145 + data, 'LA BASE DE RETENCIÓN EN LA FUENTE, CORRESPONDE AL 100% DE SUS INGRESOS MENOS LAS DEDUCCIONES DE LEY SEGÚN EL ARTÍCULO');
         doc.text(20, 150 + data, '126 DEL ESTATUTO TRIBUTARIO (AFC, APORTES OBLIGATORIOS Y/O VOLUNTARIOS DE PENSIÓN), EN CASO DE TENERLOS.');
-    
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
         doc.text(20, 170 + data, 'FUNDACIÓN SANTA FE DE BOGOTÁ');
         doc.text(20, 175 + data, 'NIT: 860037950-2');
         doc.text(20, 180 + data, `FECHA DE EXPEDICIÓN:  ${fecha.toString()}`);
-    
+
         doc.setFont('helvetica');
         doc.setFontType('normal');
         doc.setFontSize(7);
@@ -1985,8 +1980,8 @@ export class GenerarCertificadoComponent implements OnInit {
         doc.text(20, 205 + data, 'DEL AGENTE DE RETENCIÓN O EN LA SEDE DEL RETENIDO (CONCEPTO DIAN 105489 DE 24-12-2007).LA UTILIZACIÓN DE ESTE CERTIFICADO');
         doc.text(20, 210 + data, 'EN LAS DECLARACIONES TRIBUTARIAS QUE SE SURTAN ANTE LAS AUTORIDADES COMPETENTES ES RESPONSABILIDAD EXCLUSIVA DE LA(S)');
         doc.text(20, 215 + data, 'PERSONA(S) EN CUYO FAVOR SE EXPIDE.');
-    
-    
+
+
         doc.setFont('helvetica');
         doc.setFontType('bold');
         doc.setFontSize(10);
@@ -2003,9 +1998,9 @@ export class GenerarCertificadoComponent implements OnInit {
     }
     doc.setFont('helvetica');
     doc.setFontType('bold');
-    doc.text(30, 120 + aditionalHeight, `Total`);
-    doc.text(116, 120 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(base)}`);
-    doc.text(175, 120 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(retenido)}`);
+    doc.text(29, 120 + aditionalHeight, `Total`, {align: 'center'});
+    doc.text(132, 120 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(base)}`, {align: 'center'});
+    doc.text(180, 120 + aditionalHeight, `$${new Intl.NumberFormat("de-DE").format(retenido)}`, {align: 'center'});
 
 
 
