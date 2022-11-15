@@ -1073,8 +1073,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
-    // logo.src = '/assets/images/fsfb.png';
-    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    logo.src = '/assets/images/fsfb.png';
+    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = document ? document : new jsPDF()
     doc.addImage(logo, 'JPEG', 10, 5, 50, 20);
