@@ -81,8 +81,8 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
-  // currentUser: string
+  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  currentUser: string
 
   originalListaDatosAnual: any[]
 
