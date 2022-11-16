@@ -81,8 +81,8 @@ export class GenerarCertificadoComponent implements OnInit {
   fechaUno: any;
   fechaDos: any;
   form: FormGroup;
-  // currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
-  currentUser: string
+  currentUser: string = (<any>window)["ibmPortalConfig"].currentUser
+  // currentUser: string
 
   originalListaDatosAnual: any[]
 
@@ -1073,8 +1073,8 @@ export class GenerarCertificadoComponent implements OnInit {
 
 
     var logo = new Image();
-    logo.src = '/assets/images/fsfb.png';
-    // logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
+    // logo.src = '/assets/images/fsfb.png';
+    logo.src = '/wps/contenthandler/dav/fs-type1/themes/PROVEEDORES-Home/images/santafelogo.png';
 
     let doc = document ? document : new jsPDF()
     doc.addImage(logo, 'JPEG', 10, 5, 50, 20);
@@ -1159,7 +1159,8 @@ export class GenerarCertificadoComponent implements OnInit {
       aditionalHeight = data
       doc.setFontSize(8);
       doc.text(30, 110 + data, element.periodo);
-      let conceptos = doc.splitTextToSize(element.concepto, 60)
+      let conceptos = doc.splitTextToSize(element.concepto, 35)
+      console.log(conceptos)
       for (let i = 0; i < conceptos.length; i++) {
         aditionalHeight = data + (i != 0 ? 5 : 0)
         doc.text(60, 110 + aditionalHeight, conceptos[i]);
